@@ -13,19 +13,23 @@ const searchQuerySchema = z.object({
   amountMin: z
     .string()
     .optional()
-    .transform((val) => (val ? parseFloat(val) : undefined)),
+    .transform((val) => (val ? parseFloat(val) : undefined))
+    .refine((val) => val === undefined || !isNaN(val), { message: 'Invalid number' }),
   amountMax: z
     .string()
     .optional()
-    .transform((val) => (val ? parseFloat(val) : undefined)),
+    .transform((val) => (val ? parseFloat(val) : undefined))
+    .refine((val) => val === undefined || !isNaN(val), { message: 'Invalid number' }),
   page: z
     .string()
     .optional()
-    .transform((val) => (val ? parseInt(val, 10) : 1)),
+    .transform((val) => (val ? parseInt(val, 10) : 1))
+    .refine((val) => !isNaN(val) && val > 0, { message: 'Invalid page number' }),
   limit: z
     .string()
     .optional()
-    .transform((val) => (val ? parseInt(val, 10) : 20)),
+    .transform((val) => (val ? parseInt(val, 10) : 20))
+    .refine((val) => !isNaN(val) && val > 0, { message: 'Invalid limit number' }),
   sortBy: z.string().optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),
 });
@@ -35,7 +39,7 @@ export class SearchController {
     try {
       const organizationId = parseInt(req.params.organizationId, 10);
 
-      if (isNaN(organizationId)) {
+      if (isNaN(organizationId) || organizationId < 0) {
         res.status(400).json({ error: 'Invalid organization ID' });
         return;
       }
@@ -58,7 +62,7 @@ export class SearchController {
     try {
       const organizationId = parseInt(req.params.organizationId, 10);
 
-      if (isNaN(organizationId)) {
+      if (isNaN(organizationId) || organizationId < 0) {
         res.status(400).json({ error: 'Invalid organization ID' });
         return;
       }

@@ -8,6 +8,7 @@ import monitoringRoutes from './routes/monitoringRoutes';
 import { requestLoggerMiddleware, errorTrackerMiddleware, tracingMiddleware } from './middleware';
 import logger from './services/logging/logger';
 import { alertingService } from './services/monitoring/alerting';
+import paymentRoutes from './routes/paymentRoutes';
 
 const app = express();
 
@@ -21,9 +22,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 // ─── Routes ─────────────────────────────────────────────────────────────────
 app.use('/api/search', searchRoutes);
+app.use('/api/payments', paymentRoutes);
 app.use('/api/monitoring', monitoringRoutes);
 
 
@@ -46,6 +47,14 @@ app.use(errorTrackerMiddleware);
 if (process.env.NODE_ENV !== 'test') {
   alertingService.start();
 }
+// Error handler
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('Error:', err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal server error',
+  });
+});
 
 const PORT = config.PORT || 3000;
 
