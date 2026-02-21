@@ -71,7 +71,7 @@ export default function Debugger() {
                 </div>
 
                 <div className="lg:col-span-2">
-                    <div className="card glass noise min-h-[400px] flex flex-col items-center justify-center text-center p-12">
+                    <div className="card glass noise min-h-100 flex flex-col items-center justify-center text-center p-12">
                         <div className="w-16 h-16 rounded-2xl bg-accent2/10 flex items-center justify-center mb-6 border border-accent2/20">
                             <svg
                                 width="32"
